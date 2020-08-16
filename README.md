@@ -1,2 +1,2 @@
-# GNN
-Store the team's code
+# EGNN Model
+Store the EGNN code
