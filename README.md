@@ -1,7 +1,0 @@
-# egnn
-the EGNNmodel
-
-
-
-
-
