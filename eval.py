@@ -26,7 +26,7 @@ if __name__ == '__main__':
     ####################
     tt.arg.device = 'cuda:0' if tt.arg.device is None else tt.arg.device
     # replace dataset_root with your own
-    tt.arg.dataset_root = '/data/private/dataset'
+    tt.arg.dataset_root = '/home/default2/sjw/model-newdata/fewshot-egnn-master/data'
     tt.arg.dataset = 'mini' if tt.arg.dataset is None else tt.arg.dataset
     tt.arg.num_ways = 5 if tt.arg.num_ways is None else tt.arg.num_ways
     tt.arg.num_shots = 1 if tt.arg.num_shots is None else tt.arg.num_shots
@@ -59,7 +59,7 @@ if __name__ == '__main__':
     tt.arg.log_step = 1000
 
     tt.arg.lr = 1e-3
-    tt.arg.grad_clip = 5
+    tt.arg.grad_clip = 10
     tt.arg.weight_decay = 1e-6
     tt.arg.dec_lr = 15000 if tt.arg.dataset == 'mini' else 30000
     tt.arg.dropout = 0.1 if tt.arg.dataset == 'mini' else 0.0
@@ -118,8 +118,8 @@ if __name__ == '__main__':
                            data_loader=data_loader)
 
 
-    #checkpoint = torch.load('asset/checkpoints/{}/'.format(exp_name) + 'model_best.pth.tar')
-    checkpoint = torch.load('./trained_models/{}/'.format(exp_name) + 'model_best.pth.tar')
+    checkpoint = torch.load('/home/default2/sjw/model-newdata/fewshot-egnn-master/asset/checkpoints/{}/'.format(exp_name) + 'model_best.pth.tar')
+    #checkpoint = torch.load('/home/default2/sjw/trained_models/{}/'.format(exp_name) + 'model_best.pth.tar')
 
 
     tester.enc_module.load_state_dict(checkpoint['enc_module_state_dict'])

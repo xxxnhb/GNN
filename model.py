@@ -106,7 +106,7 @@ class ResNet12Block(nn.Module):
         return out
 
 class EmbeddingImagenet(nn.Module):
-    def __init__(self, emb_size, block=ResNet12Block):
+    def __init__(self, emb_size=128, block=ResNet12Block):
         super(EmbeddingImagenet, self).__init__()
         cfg = [64, 128, 256, 512]
         iChannels = int(cfg[0])

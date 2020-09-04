@@ -1,9 +1,11 @@
 from torchtools import *
 from data import MiniImagenetLoader, TieredImagenetLoader
 from model import EmbeddingImagenet, GraphNetwork, ConvNet
+from load import load_model
 import shutil
 import os
 import random
+
 #import seaborn as sns
 
 
@@ -18,8 +20,8 @@ class ModelTrainer(object):
 
         if tt.arg.num_gpus > 1:
             print('Construct multi-gpu model ...')
-            self.enc_module = nn.DataParallel(self.enc_module, device_ids=[0, 1, 2, 3], dim=0)
-            self.gnn_module = nn.DataParallel(self.gnn_module, device_ids=[0, 1, 2, 3], dim=0)
+            self.enc_module = nn.DataParallel(self.enc_module, device_ids=[0,1], dim=0)
+            self.gnn_module = nn.DataParallel(self.gnn_module, device_ids=[0,1], dim=0)
 
             print('done!\n')
 
@@ -382,7 +384,7 @@ if __name__ == '__main__':
 
     tt.arg.device = 'cuda:0' if tt.arg.device is None else tt.arg.device
     # replace dataset_root with your own
-    tt.arg.dataset_root = '/data/private/dataset'
+    tt.arg.dataset_root = '/home/default2/sjw/model-newdata/fewshot-egnn-master/data'
     tt.arg.dataset = 'mini' if tt.arg.dataset is None else tt.arg.dataset
     tt.arg.num_ways = 5 if tt.arg.num_ways is None else tt.arg.num_ways
     tt.arg.num_shots = 1 if tt.arg.num_shots is None else tt.arg.num_shots
@@ -424,6 +426,10 @@ if __name__ == '__main__':
 
     print(set_exp_name())
 
+    #pretrain setting
+    tt.arg.use_pretrain=True
+    tt.arg.pretain_path='/home/default2/sjw/GNN-pretrain/models_distilled/S:resnet12_T:resnet12_miniImageNet_kd_r:0.5_a:0.5_trans_A_born2/resnet12_last.pth'
+
     #set random seed
     np.random.seed(tt.arg.seed)
     torch.manual_seed(tt.arg.seed)
@@ -442,6 +448,10 @@ if __name__ == '__main__':
 
 
     enc_module = EmbeddingImagenet(emb_size=tt.arg.emb_size)
+    if tt.arg.use_pretrain:
+        pretrain_encoder=load_model(tt.arg.pretain_path,64).encoder
+        enc_module.load_state_dict(pretrain_encoder.state_dict())
+
 
     gnn_module = GraphNetwork(in_features=tt.arg.emb_size,
                               node_features=tt.arg.num_edge_features,
